@@ -1,21 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project2/controlers/ControlBehavior.dart';
+import 'package:project2/Helpers/DbHelper.dart';
 import 'package:project2/models/Medicine.dart';
 import 'package:project2/widgets/medicine_card.dart';
-import 'package:provider/provider.dart';
 import 'mediminder_details/mediminder_details_newEntry.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ControlBehavior controlBehavior = Provider.of<ControlBehavior>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF3EB16F),
         elevation: 0.0,
       ),
-      body: Column(
+      body: ListView(
         children: [
           Flexible(
             flex: 3,
@@ -59,25 +57,39 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  StreamBuilder<List<Medicine>>(
-                      stream: controlBehavior.medicineList,
+                  FutureBuilder(
+                      future: DbHelper.dbHelper.getAllMedicine(),
                       builder: (context, snapshot) {
-                        return Text(
-                          !snapshot.hasData ? '0' : snapshot.data.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "Neu",
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        if (snapshot.connectionState == ConnectionState.done) {
+                                return Text(
+                                  !snapshot.hasData ? '0' : snapshot.data.toString(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Neu",
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+
+
+                        }
+
+                        else if (snapshot.hasError) {
+                        return Center(
+                        child: Text('ERRoR'),
                         );
+                        } else {
+                        return Center(
+                        child: CircularProgressIndicator(),
+                        );
+                        }
                       }),
                 ],
               ),
             ),
           ),
-          StreamBuilder(
-              stream: controlBehavior.medicineList,
+          FutureBuilder(
+              future: DbHelper.dbHelper.getAllMedicine(),
               builder: (context, snapshot) {
                 if (snapshot.data.length == 0) {
                   return Flexible(
@@ -92,21 +104,19 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   );
-                }
-                else{
+                } else {
                   return Container(
                     color: Color(0xFFF6F8FC),
                     child: GridView.builder(
                       padding: EdgeInsets.only(top: 12),
-                      gridDelegate:
-                      SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
                         return MedicineCard(snapshot.data[index]);
                       },
                     ),
                   );
-
                 }
               }),
         ],
@@ -117,7 +127,8 @@ class HomePage extends StatelessWidget {
         child: Icon(
           Icons.add,
         ),
-        onPressed: () {
+        onPressed: (){
+
           Navigator.push(
             context,
             MaterialPageRoute(

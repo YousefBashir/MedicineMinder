@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:project2/Helpers/DbHelper.dart';
 
 class Medicine {
+  final int medicineId;
   final String medicineName;
   final int medicineDosage;
   final String medicineType;
@@ -8,33 +10,38 @@ class Medicine {
   final String startTime;
 
   Medicine(
-      {this.medicineName,
-      this.medicineDosage,
-      this.medicineType,
-      this.interval,
-      this.startTime});
-  int get getDosage =>medicineDosage;
+      {this.medicineId,
+      @required this.medicineName,
+      @required this.medicineDosage,
+      @required this.medicineType,
+      @required this.interval,
+      @required this.startTime});
+
+  int get getDosage => medicineDosage;
+
   String get getType => medicineType;
+
   int get getInterval => interval;
+
   String get getStartTime => startTime;
 
-
-  factory Medicine.fromJson(Map<String, dynamic> parsedJson) {
+  factory Medicine.fromMap(Map<String, dynamic> incomingData) {
     return Medicine(
-      medicineName: parsedJson['name'],
-      medicineDosage: parsedJson['dosage'],
-      medicineType: parsedJson['type'],
-      startTime: parsedJson['time'],
+      medicineId: incomingData[DbHelper.medicineIdColumnName],
+      medicineName: incomingData[DbHelper.medicineNameColumnName],
+      medicineDosage: incomingData[DbHelper.medicineDosageColumnName],
+      medicineType: incomingData[DbHelper.medicineTypeColumnName],
+      startTime: incomingData[DbHelper.startTimeColumnName],
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
-      'name': this.medicineName,
-      'dosage':this.medicineDosage,
-      'type':this.medicineType,
-      'time':this.startTime,
+      DbHelper.medicineNameColumnName: this.medicineName,
+      DbHelper.medicineDosageColumnName: this.medicineDosage,
+      DbHelper.medicineTypeColumnName: this.medicineType,
+      DbHelper.intervalColumnName:this.interval,
+      DbHelper.startTimeColumnName: this.startTime,
     };
   }
-
 }
