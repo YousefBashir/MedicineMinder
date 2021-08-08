@@ -4,6 +4,9 @@ import 'package:project2/widgets/custom_text_span.dart';
 class IntervalSelection extends StatefulWidget {
   @override
   _IntervalSelectionState createState() => _IntervalSelectionState();
+  Function function;
+
+  IntervalSelection(this.function);
 }
 
 class _IntervalSelectionState extends State<IntervalSelection> {
@@ -50,11 +53,11 @@ class _IntervalSelectionState extends State<IntervalSelection> {
                     ),
                   ));
             }).toList(),
-          onChanged: (newVal) {
+          onChanged: widget.function,/*(newVal) {
             setState(() {
               selected = newVal;
             });
-          },
+          },*/
         ),
         SizedBox(width: 10,),
         Text(selected==1?'hour':'hours', style: TextStyle(

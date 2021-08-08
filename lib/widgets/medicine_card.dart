@@ -3,9 +3,12 @@ import 'package:project2/models/Medicine.dart';
 import 'package:project2/ui/mediminder_details/mediminder_details.dart';
 
 class MedicineCard extends StatelessWidget {
-  final Medicine medicine;
+  int iconValue;
+  String name;
+  int hours;
 
-  MedicineCard(this.medicine);
+  MedicineCard({@required this.iconValue,@required this.name,@required this.hours});
+
 
   Hero makeIcon(double size) {
     if (medicine.medicineType == "Bottle") {

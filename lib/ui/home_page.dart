@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:project2/Helpers/DbHelper.dart';
 import 'package:project2/models/Medicine.dart';
 import 'package:project2/widgets/medicine_card.dart';
+import '../card.dart';
 import 'mediminder_details/mediminder_details_newEntry.dart';
 
 class HomePage extends StatelessWidget {
@@ -58,53 +59,50 @@ class HomePage extends StatelessWidget {
                     height: 20,
                   ),
                   FutureBuilder(
+                      //List<Medicine> medicine=  DbHelper.dbHelper.getAllMedicine();
                       future: DbHelper.dbHelper.getAllMedicine(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
-                                return Text(
-                                  !snapshot.hasData ? '0' : snapshot.data.toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: "Neu",
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                );
-
-
-                        }
-
-                        else if (snapshot.hasError) {
-                        return Center(
-                        child: Text('ERRoR'),
-                        );
+                         // List<Medicine> medicine = snapshot.data;
+                          return Text(
+                            !snapshot.hasData ? '0' : snapshot.data.length(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Neu",
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('ERRoR'),
+                          );
                         } else {
-                        return Center(
-                        child: CircularProgressIndicator(),
-                        );
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
                       }),
                 ],
               ),
             ),
           ),
-          FutureBuilder(
-              future: DbHelper.dbHelper.getAllMedicine(),
-              builder: (context, snapshot) {
-                if (snapshot.data.length == 0) {
-                  return Flexible(
-                    flex: 7,
-                    child: Center(
-                      child: Text(
-                        "Press + to add a Mediminder",
-                        style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.grey.shade400,
-                            fontWeight: FontWeight.bold),
-                      ),
+          Flexible(
+            flex: 7,
+            child: FutureBuilder(
+                future: DbHelper.dbHelper.getAllMedicine(),
+                builder: (context, AsyncSnapshot<List<Medicine>> snapshot) {
+                  if (!snapshot.hasData) {
+                  return Center(
+                    child: Text(
+                      "Press + to add a Mediminder",
+                      style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.grey.shade400,
+                          fontWeight: FontWeight.bold),
                     ),
                   );
-                } else {
+                   } else {
                   return Container(
                     color: Color(0xFFF6F8FC),
                     child: GridView.builder(
@@ -112,13 +110,13 @@ class HomePage extends StatelessWidget {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2),
                       itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return MedicineCard(snapshot.data[index]);
+                      itemBuilder: (BuildContext context, int index) {
+                        return null;//MedicineCardView(iconValue: ,type: ,interval: ,);
                       },
                     ),
                   );
-                }
-              }),
+                }}),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -127,8 +125,7 @@ class HomePage extends StatelessWidget {
         child: Icon(
           Icons.add,
         ),
-        onPressed: (){
-
+        onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
